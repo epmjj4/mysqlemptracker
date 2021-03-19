@@ -3,6 +3,7 @@ const util = require('util');
 
 const connection = mysql.createConnection({
     host:'localhost',
+    port: 3303,
     user:'root',
     password: process.env.password,
     database:'emp_db'     
