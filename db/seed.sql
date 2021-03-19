@@ -1,22 +1,26 @@
-INSERT INTO department(name) 
-VALUES 
-("Administrative"), ("Development"), ("Support"), ("Training");
+USE emp_db;
 
-INSERT INTO role(title, salary, department_id) 
-VALUES 
-("Administrator", 50000, 1),
-("Developer", 60000, 2),
-("Support", 42000, 3),
-("Trainer", 45000, 4),
-("Admin Manager", 80000, 1),
-("Dev Manager", 90000, 2),
-("Support Manager", 70000, 3),
-("Training Manager", 75000, 4);
+INSERT INTO department
+    (name)
+VALUES
+    ('Sales'),
+    ('Engineering'),
+    ('Finance'),
+    ('Legal');
+    
+    
+    INSERT INTO role
+    (title, salary, department_id)
+VALUES
+    ('Sales Lead', 100000, 1),
+    ('Salesperson', 80000, 1),
+    ('Lead Engineer', 150000, 2),
+    ('Software Engineer', 120000, 2),
+    ('Account Manager', 160000, 3),
+    ('Accountant', 125000, 3),
+    ('Legal Team Lead', 250000, 4),
+    ('Lawyer', 190000, 4);
 
 INSERT INTO employee(first_name, last_name, role_id, manager_id)
 VALUES 
-("Ernesto", "Pelaez", 5, null);
-
-SELECT * FROM department;
-SELECT * FROM role;
-SELECT * FROM employee;
+("Ernesto", "Pelaez", 4, NULL);

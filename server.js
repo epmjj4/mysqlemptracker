@@ -21,6 +21,7 @@ function taskPrompt() {
             name: 'input',
             message: 'Which department would you like to add?',
             choices: [{
+                
                     name: 'View Employees',
                     value: 'VIEW_EMPLOYEES',
 
@@ -36,6 +37,8 @@ function taskPrompt() {
 
                 },
             ],
+            //add roles and employees and updated them
+            //updated employeed role
 
 
         },
