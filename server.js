@@ -162,7 +162,115 @@ function addRole() {
     })
 }
 
+function addEmployee(){
+    connection.query('SELECT * FROM role', (err, res) => {
+        if(err) throw err;
+        inquirer.prompt([
+            {
+                type:'input',
+                message:'What is the new employees first name?',
+                name:'first_name'
+            },
+            {
+                type:'input',
+                message:'What is the new employees first name?',,
+                name:'last_name',
+            },
+            {
+                type:'rawList',
+                message:'Which Role does the employee belong too?',
+                choices: function(){
+                    let choicesArray = [];
+                    res.forEach(res => {
+                        choicesArray.push(res.title);
+                    });
+                    return choicesArray;
+                }
+                name:'role'
+            },
 
+        ]).then(function (answer) {
+            const role = answer.role;
+            connection.query('SELECT * FROM role', (err, res) => {
+                if(err) throw err;
+                let filteredRole = res.filter(res => {
+                    return res.title == role;
+                });
+
+                let id = filteredRole[0].id;
+                connection.query('INSERT INTO employee (first_name, last_name, role_id) VALUES (?,?,?)',
+                [
+                    answer.first_name,
+                    answer.last_name,
+                    id
+                ],
+                function (err) {
+                    if(err) throw err;
+                    console.log(`You have added this new employee: ${(answer.first_name)} ${(last_name, role_id)} successfully`)
+                
+            });
+            viewAllEmployees();
+        });
+    });
+}
+
+function updateEmployee(){
+    connection.query('SELECT * FROM employee', (err, res) => {
+        if(err) throw err;
+        inquirer.prompt([
+            {
+                type:'rawlist',
+                message:'Which employee would you like to update? Please enter their name.',
+                choices: function(){
+                    chosenEmployee = [];
+                    res.forEach(res => {
+                        chosenEmployee.push(res.last_name);
+                    });
+                    return chosenEmployee;
+                    
+                },
+                name:'employee'
+            }
+
+        ]).then(function (answer) {
+            const changeEmployee = answer.employee;
+            console.log('Employee chosen: ' = chosenEmployee);
+            connection.query('SELECT * FROM role', (err, res) => {
+                if(err) throw err;
+                inquirer.prompt([
+                    {
+                        type:'rawlist',
+                        message:'What is this employees new role?',
+                        choice: function(){
+                            newRole = [];
+                            res.forEach(res => {
+                                newRole.push(res.title);
+                            });
+                            return newRole;
+                        },
+                        name:"newRole"
+                    }
+
+                ]).then(function (update){
+                    const updateRole = update.newRole;
+                    console.log('Updated role: ' + updatedRole);
+                    connection.query('SELECT * FROM role WHERE title = ?', [updatedRole], (err, res) => {
+                        if (err) throw err;
+                        let roldeID = res.[0].id;
+                        console.log("Role id:" + roldeID);
+                        let params = [roleID, changeEmployee];
+                        connection.query('UPDATE employee SET role_id = ? WHERE last_name = ?', params,
+                        (err,res) => {
+                            if (err)throw err;
+                            console.log(`You have updated ${changeEmployee}'s role to ${updatedRole}.`)
+                        });
+                        viewAllEmployees();
+                    })
+                } )
+            })
+        })
+    }
+}
 
 
 
