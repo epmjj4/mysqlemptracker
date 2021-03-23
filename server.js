@@ -3,6 +3,9 @@ const mysql = require('mysql');
 require('console.table');
 const db = require('./db');
 const logo = require('asciiart-logo');
+const {
+    connection
+} = require('./db');
 
 
 const start = () => {
@@ -19,9 +22,9 @@ function taskPrompt() {
     inquirer.prompt([{
             type: 'list',
             name: 'input',
-            message: 'Which department would you like to add?',
+            message: 'Which department would you like to modify?',
             choices: [{
-                
+
                     name: 'View Employees',
                     value: 'VIEW_EMPLOYEES',
 
@@ -89,17 +92,77 @@ function viewAllEmployees() {
     taskPrompt();
 }
 
-// function addDepartment() {
-//     inquirer.prompt ({
-//         [{
-//                 type: 'input',
-//                 message: 'Enter new Department ',
-//                 name: 'newDepartment'
-//             }
+function addDepartment() {
+    inquirer.prompt([{
+        type: 'input',
+        message: "Enter the name of the department you would like to add?",
+        name: 'newDepartment'
+    }, ]).then(function (answer) {
+        connection.query(
+            'INSERT INTO department SET ?', {
+                name: answer.newDepartment
+            },
+            function (err) {
+                if (err) throw err;
+                console.log("You have successfully added a new department.");
+                taskPrompt();
+            }
+        )
+    })
+};
 
-//         ]
-//     }
-// }
+function addRole() {
+    connection.query('SELECT * FROM department', (err, res) => {
+        if (err) throw err;
+        inquirer.prompt([{
+                type: 'input',
+                message: 'Enter the new role you would like to create?',
+                name: 'newRole'
+
+            },
+            {
+                type: 'input',
+                message: 'How much is their annual salary?',
+                name: 'annSalary'
+
+            },
+            {
+                type: 'rawList',
+                message: 'What department does this new role belong too?',
+                choices: function () {
+                    let choicesArray = [];
+                    res.forEach(res => {choicesArray.push(res.name)});
+                    return choicesArray;
+                },
+                name:'department'
+
+            },
+
+        ]).then(function (answer) {
+            const dept = answer.department;
+            connection.query('SELECT * FROM department', (err, res) => {
+                if(err) throw err;
+                let filteredDept = res.filter(res => {
+                    return res.name == dept;
+                });
+                let id = filteredDept[0].id;
+                connection.query('INSERT INTO role (title, salary, department_id) VALUES (?,?,?)',
+                [
+                    answer.newRole,
+                    parseInt(answer.salary),
+                    id
+                ],
+                function(err) {
+                    if(err) throw err;
+                    console.log(`You have added this new role: ${(answer.newRole).toUpperCase()} successfully.`) 
+                
+            })
+            viewAllRoles();
+        })
+    })
+}
+
+
 
 
 
@@ -116,7 +179,7 @@ async function viewAllRoles() {
 }
 
 async function viewAllDepartments() {
-    const employees = await db.findRoles();
+    const employees = await db.findDepartments();
     console.log(`\n`);
     console.table(roles);
 }
