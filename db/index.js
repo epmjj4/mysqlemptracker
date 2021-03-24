@@ -32,8 +32,8 @@ class DB {
         return this.connection.query("INSERT INTO role SET ?", rle);
     }
 
-    updateRole(empId, rleId){
-        return this.connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [empId, rleId]);
+    updateRole(rleId, empId){
+        return this.connection.query("UPDATE employee SET role_id = ? WHERE id = ?", [rleId, empId]);
     }
 };
 
