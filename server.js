@@ -45,15 +45,48 @@ function taskPrompt() {
 
 
         },
+        {
+            type:"list",
+            message:"Please choose an option:",
+            choices: [
+                'View all departments',
+                'View all roles',
+                'View all employees',
+                'Add a department',
+                'Add a role',
+                'Add an employee',
+                'Updated employee role',
+                'Exit'
+            ],
+            name:choice
+        }
 
     ]).then(response => {
         switch (response.input) {
+            
             case "VIEW_EMPLOYEES":
                 return viewAllEmployees();
             case "VIEW_ROLES":
                 return viewAllRoles();
             case "VIEW_DEPARTMENTS":
                 return viewAllDepartments();
+                if (response.choice === "View all departments") {
+                    viewDepartments();
+                } else if (response.choice === "View all roles") {
+                    viewRoles();
+                } else if (response.choice === "View all employees") {
+                    viewEmployees();
+                } else if (response.choice === "Add department") {
+                    addDepartment();
+                } else if (response.choice === "Add role") {
+                    addRole();
+                } else if (response.choice === "Add employees") {
+                    addEmployee();
+                } else if (response.choice === "Update employee role") {
+                    updateEmployee();
+                } else {
+                    connection.end();
+                }
         }
 
     });
