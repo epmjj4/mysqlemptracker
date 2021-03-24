@@ -4,7 +4,7 @@ require('console.table');
 const db = require('./db');
 const logo = require('asciiart-logo');
 const {
-    connection
+    connection, findEmployees, findDepartment, createDepartment, createRole, createEmployee
 } = require('./db');
 
 
@@ -39,28 +39,40 @@ function taskPrompt() {
                     value: 'VIEW_DEPARTMENTS',
 
                 },
+                {
+                    name: 'Add Department',
+                    value: 'ADD_DEPARTMENTS',
+
+                },
+                {
+                    name: 'Add Role',
+                    value: 'ADD_ROLE',
+
+                },
+                {
+                    name: 'Add Employee',
+                    value: 'ADD_EMPLOYEE',
+
+                },
+                {
+                    name: 'Update Employee Role',
+                    value: 'UPDATE_EMPLOYEE_ROLE',
+
+                },
+                {
+                    name: 'Finish',
+                    value: 'Finish',
+
+                },
+                
+                
             ],
             //add roles and employees and updated them
             //updated employeed role
 
 
         },
-        {
-            type:"list",
-            message:"Please choose an option:",
-            choices: [
-                'View all departments',
-                'View all roles',
-                'View all employees',
-                'Add a department',
-                'Add a role',
-                'Add an employee',
-                'Updated employee role',
-                'Exit'
-            ],
-            name:choice
-        }
-
+        
     ]).then(response => {
         switch (response.input) {
             
@@ -70,27 +82,107 @@ function taskPrompt() {
                 return viewAllRoles();
             case "VIEW_DEPARTMENTS":
                 return viewAllDepartments();
-                if (response.choice === "View all departments") {
-                    viewDepartments();
-                } else if (response.choice === "View all roles") {
-                    viewRoles();
-                } else if (response.choice === "View all employees") {
-                    viewEmployees();
-                } else if (response.choice === "Add department") {
-                    addDepartment();
-                } else if (response.choice === "Add role") {
-                    addRole();
-                } else if (response.choice === "Add employees") {
-                    addEmployee();
-                } else if (response.choice === "Update employee role") {
-                    updateEmployee();
-                } else {
-                    connection.end();
-                }
+                case "ADD_DEPARTMENTS":
+                    return addDepartment();
+                    case "ADD_ROLE":
+                        return addRole();
+                        case "ADD_EMPLOYEE":
+                            return addEmployee();
+                            case "UPDATE_EMPLOYEE_ROLE":
+                                return updatedRole();
+                                default:
+                                    return finishPrompts();
+
+                
+                
         }
 
     });
 }
+
+const finishPrompts =() => {
+    console.log('Thanks and goodbye');
+    process.nextTick();
+    }
+//
+    async function viewAllEmployees() {
+        const employees = await db.findEmployees();
+        console.log(`\n`);
+        console.table(employees);
+        taskPrompt();
+    }
+    
+    async function viewAllRoles() {
+        const employees = await db.findRoles();
+        console.log(`\n`);
+        console.table(roles);
+        taskPrompt();
+    }
+    
+    async function viewAllDepartments() {
+        const employees = await db.findDepartments();
+        console.log(`\n`);
+        console.table(roles);
+        taskPrompt();
+    }
+ 
+    async function addDepartment(){
+        const department = await inquirer.prompt([
+            {
+                type:'input',
+                message:'What department would you like to create',
+                name:"name"
+            }
+
+        ]);
+        await db.createDepartment(department);
+        console.log(`${department.name} has been added to your database`);
+        taskPrompt();
+    }
+
+    async function addRole() {
+        const department = await db.findDepartment();
+        const listChoices = department.map(({ id, name }) => ({
+            name: name,
+            id: id
+        }));
+        const role = await inquirer.prompt([
+            {
+                type:'input',
+                message:'What is title of new employee?',
+                name:'title'
+            },
+            {
+                type:'input',
+                message:'What is the salary?',
+                name:'salary'
+            },
+            {
+                type:'list',
+                message:'Which department does the job fall under?',
+                name:'department_id'
+                choices:listChoices
+            }
+        ])
+            await db.createRole(role)
+            console.log(`${role.title} has been added to your database`);
+            taskPrompt(); 
+    }
+
+    async function addDepartment(){
+        const department = await inquirer.prompt([
+            {
+                type:'input',
+                message:'What department would you like to create',
+                name:"dptName"
+            }
+
+        ]);
+        await db.createDepartment(department);
+        console.log(`${department.name} has been added to your database`);
+        taskPrompt();
+    }
+
 
 function viewAllDepartments() {
     let query = "SELECT * FROM department";
@@ -307,20 +399,5 @@ function updateEmployee(){
 
 
 
-async function viewAllEmployees() {
-    const employees = await db.findEmployees();
-    console.log(`\n`);
-    console.table(employees);
-}
 
-async function viewAllRoles() {
-    const employees = await db.findRoles();
-    console.log(`\n`);
-    console.table(roles);
-}
 
-async function viewAllDepartments() {
-    const employees = await db.findDepartments();
-    console.log(`\n`);
-    console.table(roles);
-}
