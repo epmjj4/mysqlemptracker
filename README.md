@@ -12,10 +12,11 @@ https://epmjj4.github.io/mysqlemptracker/
 
 # mysqlemptracker-screenshot
 
-![alt text]("emptracker")
+![alt text](https://raw.githubusercontent.com/epmjj4/mysqlemptracker/main/assets/mysql-screenshot.PNG "emptracker")
 
 # Screencastify
 
+https://drive.google.com/file/d/1UNuZWZha0xqcgmCctv3JxJgHRjrYyvrs/view
 
 
 # Credits
